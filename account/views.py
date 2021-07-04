@@ -160,34 +160,3 @@ class VerifyAgent(UpdateAPIView):
                 }
             print(e)
         return Response(response, status=status_code)
-class AddAdmin(UpdateAPIView):
-    permission_classes = (IsAuthenticated,IsAdminUser)
-    authentication_class = JSONWebTokenAuthentication
-    serializer_class = UserSerializer
-    def post(self,request):
-        try:
-            user = request.user
-            print(user)
-            verify_superuser =  User.objects.filter(email = user).values("is_superuser")
-            print(verify_superuser)
-            if list(verify_superuser)[0]['is_superuser'] == True:
-                agent_email = request.data['agent_email']
-                print(agent_email)
-                
-                User.objects.filter(email = agent_email).update(
-                    is_verified = True
-                )
-                status_code = status.HTTP_200_OK
-                
-                response = f"{agent_email} verified"
-                return Response(response,status=status_code)
-            return Response({"msg":"Not Authorized"})
-        except Exception as e:
-            status_code = status.HTTP_400_BAD_REQUEST
-            response = {
-                'success': 'false',
-                'status code': status.HTTP_400_BAD_REQUEST,
-                'message': 'User does not exists',
-                }
-            print(e)
-        return Response(response, status=status_code)
