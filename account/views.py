@@ -1,17 +1,17 @@
 from django.shortcuts import render
 
 from rest_framework import status
-from rest_framework.permissions import AllowAny,IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAdminUser,IsAuthenticated
 from django.contrib.auth import get_user_model
 from rest_framework.decorators import api_view
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView,ListAPIView
 from rest_framework.response import Response
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
-from .serializers import AgentRegistrationSerializer, UserLoginSerializer, UserRegistrationSerializer
+from .serializers import AgentRegistrationSerializer, UserLoginSerializer, UserRegistrationSerializer, UserSerializer
 from .models import User
 from django.http import HttpRequest
 from rest_framework.generics import RetrieveAPIView
-from django.contrib.auth.hashers import make_password
+
 
 
 class UserLoginView(RetrieveAPIView):
@@ -71,7 +71,7 @@ class UserProfileView(RetrieveAPIView):
 
     permission_classes = (IsAuthenticated,)
     authentication_class = JSONWebTokenAuthentication
-
+    
     def get(self, request):
         
         try:
@@ -97,3 +97,36 @@ class UserProfileView(RetrieveAPIView):
                 }
             print(e)
         return Response(response, status=status_code)
+    
+class ListUsers(ListAPIView):
+    permission_classes = (IsAuthenticated,IsAdminUser)
+    authentication_class = JSONWebTokenAuthentication
+    serializer_class = UserSerializer
+    
+    def get(self, request):
+        
+        try:
+            
+            user_list = User.objects.all()
+            serialized_data = self.serializer_class(user_list,many=True).data
+            status_code = status.HTTP_200_OK
+            response = {
+                'success': 'true',
+                'status code': status_code,
+                'message': 'User profile fetched successfully',
+                'data': [{
+                    'users':serialized_data
+                    }]
+                }
+
+        except Exception as e:
+            status_code = status.HTTP_400_BAD_REQUEST
+            response = {
+                'success': 'false',
+                'status code': status.HTTP_400_BAD_REQUEST,
+                'message': 'User does not exists',
+                }
+            print(e)
+        return Response(response, status=status_code)
+    
+    

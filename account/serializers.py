@@ -12,7 +12,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('email', 'name', 'phone_regex')
+        fields = ('email', 'name', 'phone')
 
 class UserLoginSerializer(serializers.Serializer):
 
