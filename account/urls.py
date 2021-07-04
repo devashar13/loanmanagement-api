@@ -1,10 +1,12 @@
 
+# from account.views import MyTokenObtainPairView
 from django.contrib import admin
 from django.urls import path
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
+from .views import *
 
-)
 urlpatterns = [
-    path('login', TokenObtainPairView.as_view(), name='login'),
+    path('login',UserLoginView.as_view() , name='login'),
+    path('profile', UserProfileView.as_view(),name="profile"),
+    path('register', UserRegistrationView.as_view(),name="register"),
+    
 ]
