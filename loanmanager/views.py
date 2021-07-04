@@ -70,3 +70,27 @@ class ListLoans(ListAPIView):
         user = self.request.user
         model = Loan.objects.all()
         return model
+class UpdateLoanState(UpdateAPIView):
+    permission_classes = (IsAuthenticated,IsAdminUser)
+    serializer_class = LoanSerializer
+    
+    def put(self, request): 
+        verify_admin =  User.objects.filter(email = request.user).values("is_superuser","is_staff")
+        if list(verify_admin)[0]['is_superuser'] == True :
+            
+            Loan.objects.filter(id = self.request.data['id']).update(
+                state = self.request.data['state'] 
+            )
+            state = self.request.data['state']
+            response = {
+                    'success': 'true',
+                    'message': f'Loan has been {state}',
+                    
+                    }
+        
+
+            return Response(response)
+        return Response({"msg":"Route Blocked"})
+            
+            
+        
