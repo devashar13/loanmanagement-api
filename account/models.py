@@ -16,6 +16,7 @@ class MyAccountManager(BaseUserManager):
         """
         if not email:
             raise ValueError(_('The Email must be set'))
+        extra_fields.setdefault('is_verified', True)
         email = self.normalize_email(email)                  #self.normalize_email(email).lower
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
@@ -26,6 +27,7 @@ class MyAccountManager(BaseUserManager):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)
+        extra_fields.setdefault('is_verified', True)
 
         if extra_fields.get('is_staff') is not True:
             raise ValueError(_('Superuser must have is_staff=True.'))
@@ -33,9 +35,12 @@ class MyAccountManager(BaseUserManager):
             raise ValueError(_('Superuser must have is_superuser=True.'))
         return self.create_user(email, password, **extra_fields)
     def create_agent(self, email, password, **extra_fields):
+        extra_fields.setdefault('is_verified', False)
+        
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', False)
         extra_fields.setdefault('is_active', True)
+        
 
         return self.create_user(email, password, **extra_fields)
 
