@@ -11,9 +11,7 @@ from django.utils import timezone
 
 class MyAccountManager(BaseUserManager):
     def create_user(self, email, password, **extra_fields):
-        """
-        Create and save a User with the given email and password.
-        """
+
         if not email:
             raise ValueError(_('The Email must be set'))
         extra_fields.setdefault('is_verified', True)
@@ -36,8 +34,7 @@ class MyAccountManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
     def create_agent(self, email, password, **extra_fields):
         extra_fields.setdefault('is_verified', False)
-        
-        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_staff', False)
         extra_fields.setdefault('is_superuser', False)
         extra_fields.setdefault('is_active', True)
         

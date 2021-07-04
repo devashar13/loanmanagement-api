@@ -3,6 +3,7 @@ from django.contrib.auth.models import update_last_login
 from django.db.models.query_utils import PathInfo
 from rest_framework import serializers
 from rest_framework_jwt.settings import api_settings
+from rest_framework.decorators import api_view
 from .models import User
 
 JWT_PAYLOAD_HANDLER = api_settings.JWT_PAYLOAD_HANDLER
@@ -75,3 +76,4 @@ class AgentRegistrationSerializer(serializers.ModelSerializer):
             phone=validated_data['phone'],
         )
         return user
+
