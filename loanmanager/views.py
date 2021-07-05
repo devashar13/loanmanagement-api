@@ -169,6 +169,8 @@ class UpdateLoan(UpdateAPIView):
                 if str(agent) == str(Loan.objects.filter(id = request.data['id']).values('created_by__email').first()['created_by__email']) :
                     
                     keys  = self.request.POST.keys()
+                    if "state" in keys:
+                        return Response({"msg":"You are not allowed to change the state"})
                     if 'amount' or "interest" or "tenure" in keys:
                         print("hi")
                         amount = request.data['amount'] if 'amount' in request.data else Loan.objects.filter(id = request.data['id']).values('loan_amount').first()['loan_amount']
